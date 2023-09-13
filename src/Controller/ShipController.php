@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ShipController extends AbstractController
 {
-    // Add ship to user fleet //FIXME can't test
+    // Add ship to user fleet //FIXME Error 500
     #[Route('/ship/add', name: 'add_ship', methods: ['POST'])]
     public function addShip(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -21,14 +21,15 @@ class ShipController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         // Get the owner ID as an object
-        $ownerId = $request->get('ownerId')->get();
+        $ownerId = $request->get('ownerId');
 
         // Create a new Ship
         $ship = new Ship();
-        $ship->setOwner($data[$ownerId]);
+        $ship->setOwner($ownerId);
         $ship->setName($data['name']);
         if ($data['uniqueName']) {
             $ship->setUniqueName($data['uniqueName']);
+            
         }
 
         // Persist and flush
