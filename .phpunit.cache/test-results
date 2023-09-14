@@ -1,1 +1,1 @@
-{"version":1,"defects":{"App\\Tests\\Controller\\ShipControllerTest::testAddShip":3},"times":{"App\\Tests\\Controller\\ShipControllerTest::testAddShip":0.738}}
+{"version":1,"defects":{"App\\Tests\\Controller\\ShipControllerTest::testAddShip":7},"times":{"App\\Tests\\Controller\\ShipControllerTest::testAddShip":0.389}}

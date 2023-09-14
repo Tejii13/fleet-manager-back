@@ -113,28 +113,6 @@ class Member
         return $this;
     }
 
-    public function getFleet(): ?Fleet
-    {
-        return $this->fleet;
-    }
-
-    public function setFleet(?Fleet $fleet): static
-    {
-        // unset the owning side of the relation if necessary
-        if ($fleet === null && $this->fleet !== null) {
-            $this->fleet->setOwner(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($fleet !== null && $fleet->getOwner() !== $this) {
-            $fleet->setOwner($this);
-        }
-
-        $this->fleet = $fleet;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Ship>
      */

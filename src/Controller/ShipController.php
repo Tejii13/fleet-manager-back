@@ -20,23 +20,31 @@ class ShipController extends AbstractController
         // Extract data from the request
         $data = json_decode($request->getContent(), true);
 
+        var_dump($data);
+
+        // if (isset())
+
         // Get the owner ID as an object
-        $ownerId = $request->get('ownerId');
+        $ownerId = $data['ownerId'];
+
+        // Verify if name is null
+        if (empty($data['name'])) {
+            return $this->json(['Code' => 400, 'Message' => 'Le champ "name" est requis.'], 400);
+        }
 
         // Create a new Ship
         $ship = new Ship();
         $ship->setOwner($ownerId);
         $ship->setName($data['name']);
-        if ($data['uniqueName']) {
+        if (isset($data['uniqueName'])) {
             $ship->setUniqueName($data['uniqueName']);
-            
         }
 
         // Persist and flush
         $entityManager->persist($ship);
         $entityManager->flush();
 
-        return $this->json(['code'=>201,'Message'=>'Created a new ship '.$ship->getName().$data['uniqueName']?'named '.$ship->getUniqueName():null]);
+        return $this->json(['code' => 201, 'Message' => 'Created a new ship ' . $ship->getName() . $data['uniqueName'] ? 'named ' . $ship->getUniqueName() : null], 201);
     }
 
     // Update uniqueName //FIXME Doesn't work
@@ -57,7 +65,7 @@ class ShipController extends AbstractController
         $entityManager->persist($ship);
         $entityManager->flush();
 
-        return $this->json(['Code'=>200, 'Message'=>'Ship name changed to ' . $newUniqueName]);
+        return $this->json(['Code' => 200, 'Message' => 'Ship name changed to ' . $newUniqueName]);
     }
 
     // Delete ship from fleet //FIXME Doesn't work
@@ -73,7 +81,7 @@ class ShipController extends AbstractController
         $entityManager->remove($ship);
         $entityManager->flush();
 
-        return $this->json(['Code'=>200,'Message'=>'Ship deleted successfully']);
+        return $this->json(['Code' => 200, 'Message' => 'Ship deleted successfully']);
     }
 
     // Get ship information
