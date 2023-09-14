@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\LoadoutRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LoadoutRepository::class)]
+#[ApiResource]
 class Loadout
 {
     #[ORM\Id]
@@ -18,49 +21,42 @@ class Loadout
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $coolers = null;
-
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $powerPlant = null;
-
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $shields = null;
-
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $quantumDrive = null;
-
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $missiles = null;
-
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $turrets = null;
-
-    #[ORM\Column(length: 30, nullable: true)]
-    private ?string $utilityItem = null;
-
-    #[ORM\Column(length: 30, nullable: true)]
-    private ?string $weapons = null;
-
     #[ORM\ManyToOne(inversedBy: 'loadouts')]
-    private ?Member $owner = null;
+    private ?Ship $forShip = null;
 
-    #[ORM\ManyToOne(inversedBy: 'associatedLoadout')]
-    private ?Ship $ship = null;
+    #[ORM\Column(nullable: true)]
+    private ?array $powerPlant = null;
 
-    #[ORM\ManyToMany(targetEntity: Components::class, mappedBy: 'composes')]
+    #[ORM\Column(nullable: true)]
+    private ?array $cooler = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $shield = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $quantumDrive = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $weapon = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $missile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $turret = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $utilityItem = null;
+
+    #[ORM\ManyToMany(targetEntity: Component::class, mappedBy: 'forLoadout')]
     private Collection $components;
-
-    #[ORM\ManyToMany(targetEntity: Components::class, inversedBy: 'loadouts')]
-    private Collection $isComposedBy;
 
     public function __construct()
     {
         $this->components = new ArrayCollection();
-        $this->isComposedBy = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,173 +88,137 @@ class Loadout
         return $this;
     }
 
-    public function getCoolers(): ?string
+    public function getForShip(): ?Ship
     {
-        return $this->coolers;
+        return $this->forShip;
     }
 
-    public function setCoolers(?string $coolers): static
+    public function setForShip(?Ship $forShip): static
     {
-        $this->coolers = $coolers;
+        $this->forShip = $forShip;
 
         return $this;
     }
 
-    public function getPowerPlant(): ?string
+    public function getPowerPlant(): ?array
     {
         return $this->powerPlant;
     }
 
-    public function setPowerPlant(?string $powerPlant): static
+    public function setPowerPlant(?array $powerPlant): static
     {
         $this->powerPlant = $powerPlant;
 
         return $this;
     }
 
-    public function getShields(): ?string
+    public function getCooler(): ?array
     {
-        return $this->shields;
+        return $this->cooler;
     }
 
-    public function setShields(?string $shields): static
+    public function setCooler(?array $cooler): static
     {
-        $this->shields = $shields;
+        $this->cooler = $cooler;
 
         return $this;
     }
 
-    public function getQuantumDrive(): ?string
+    public function getShield(): ?array
+    {
+        return $this->shield;
+    }
+
+    public function setShield(?array $shield): static
+    {
+        $this->shield = $shield;
+
+        return $this;
+    }
+
+    public function getQuantumDrive(): ?array
     {
         return $this->quantumDrive;
     }
 
-    public function setQuantumDrive(?string $quantumDrive): static
+    public function setQuantumDrive(?array $quantumDrive): static
     {
         $this->quantumDrive = $quantumDrive;
 
         return $this;
     }
 
-    public function getMissiles(): ?string
+    public function getWeapon(): ?array
     {
-        return $this->missiles;
+        return $this->weapon;
     }
 
-    public function setMissiles(?string $missiles): static
+    public function setWeapon(?array $weapon): static
     {
-        $this->missiles = $missiles;
+        $this->weapon = $weapon;
 
         return $this;
     }
 
-    public function getTurrets(): ?string
+    public function getMissile(): ?array
     {
-        return $this->turrets;
+        return $this->missile;
     }
 
-    public function setTurrets(?string $turrets): static
+    public function setMissile(?array $missile): static
     {
-        $this->turrets = $turrets;
+        $this->missile = $missile;
 
         return $this;
     }
 
-    public function getUtilityItem(): ?string
+    public function getTurret(): ?array
+    {
+        return $this->turret;
+    }
+
+    public function setTurret(?array $turret): static
+    {
+        $this->turret = $turret;
+
+        return $this;
+    }
+
+    public function getUtilityItem(): ?array
     {
         return $this->utilityItem;
     }
 
-    public function setUtilityItem(?string $utilityItem): static
+    public function setUtilityItem(?array $utilityItem): static
     {
         $this->utilityItem = $utilityItem;
 
         return $this;
     }
 
-    public function getWeapons(): ?string
-    {
-        return $this->weapons;
-    }
-
-    public function setWeapons(?string $weapons): static
-    {
-        $this->weapons = $weapons;
-
-        return $this;
-    }
-
-    public function getOwner(): ?Member
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?Member $owner): static
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    public function getShip(): ?Ship
-    {
-        return $this->ship;
-    }
-
-    public function setShip(?Ship $ship): static
-    {
-        $this->ship = $ship;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Components>
+     * @return Collection<int, Component>
      */
     public function getComponents(): Collection
     {
         return $this->components;
     }
 
-    public function addComponent(Components $component): static
+    public function addComponent(Component $component): static
     {
         if (!$this->components->contains($component)) {
             $this->components->add($component);
-            $component->addCompose($this);
+            $component->addForLoadout($this);
         }
 
         return $this;
     }
 
-    public function removeComponent(Components $component): static
+    public function removeComponent(Component $component): static
     {
         if ($this->components->removeElement($component)) {
-            $component->removeCompose($this);
+            $component->removeForLoadout($this);
         }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Components>
-     */
-    public function getIsComposedBy(): Collection
-    {
-        return $this->isComposedBy;
-    }
-
-    public function addIsComposedBy(Components $isComposedBy): static
-    {
-        if (!$this->isComposedBy->contains($isComposedBy)) {
-            $this->isComposedBy->add($isComposedBy);
-        }
-
-        return $this;
-    }
-
-    public function removeIsComposedBy(Components $isComposedBy): static
-    {
-        $this->isComposedBy->removeElement($isComposedBy);
 
         return $this;
     }

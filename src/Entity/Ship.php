@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ShipRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ShipRepository::class)]
+#[ApiResource]
 class Ship
 {
     #[ORM\Id]
@@ -19,24 +21,17 @@ class Ship
     private ?string $name = null;
 
     #[ORM\Column(length: 32, nullable: true)]
-    private ?string $uniqueName = null;
+    private ?string $nickname = null;
 
     #[ORM\ManyToOne(inversedBy: 'ships')]
     private ?Member $owner = null;
 
-    #[ORM\OneToMany(mappedBy: 'ship', targetEntity: Loadout::class)]
-    private Collection $associatedLoadout;
-
-    #[ORM\OneToMany(mappedBy: 'forShip', targetEntity: Preset::class)]
-    private Collection $presets;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Loadout $loadout = null;
+    #[ORM\OneToMany(mappedBy: 'forShip', targetEntity: Loadout::class)]
+    private Collection $loadouts;
 
     public function __construct()
     {
-        $this->associatedLoadout = new ArrayCollection();
-        $this->presets = new ArrayCollection();
+        $this->loadouts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,14 +51,14 @@ class Ship
         return $this;
     }
 
-    public function getUniqueName(): ?string
+    public function getNickname(): ?string
     {
-        return $this->uniqueName;
+        return $this->nickname;
     }
 
-    public function setUniqueName(string $uniqueName): static
+    public function setNickname(?string $nickname): static
     {
-        $this->uniqueName = $uniqueName;
+        $this->nickname = $nickname;
 
         return $this;
     }
@@ -83,72 +78,33 @@ class Ship
     /**
      * @return Collection<int, Loadout>
      */
-    public function getAssociatedLoadout(): Collection
+    public function getLoadouts(): Collection
     {
-        return $this->associatedLoadout;
+        return $this->loadouts;
     }
 
-    public function addAssociatedLoadout(Loadout $associatedLoadout): static
+    public function addLoadout(Loadout $loadout): static
     {
-        if (!$this->associatedLoadout->contains($associatedLoadout)) {
-            $this->associatedLoadout->add($associatedLoadout);
-            $associatedLoadout->setShip($this);
+        if (!$this->loadouts->contains($loadout)) {
+            $this->loadouts->add($loadout);
+            $loadout->setForShip($this);
         }
 
         return $this;
     }
 
-    public function removeAssociatedLoadout(Loadout $associatedLoadout): static
+    public function removeLoadout(Loadout $loadout): static
     {
-        if ($this->associatedLoadout->removeElement($associatedLoadout)) {
+        if ($this->loadouts->removeElement($loadout)) {
             // set the owning side to null (unless already changed)
-            if ($associatedLoadout->getShip() === $this) {
-                $associatedLoadout->setShip(null);
+            if ($loadout->getForShip() === $this) {
+                $loadout->setForShip(null);
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Preset>
-     */
-    public function getPresets(): Collection
-    {
-        return $this->presets;
-    }
-
-    public function addPreset(Preset $preset): static
-    {
-        if (!$this->presets->contains($preset)) {
-            $this->presets->add($preset);
-            $preset->setForShip($this);
-        }
-
-        return $this;
-    }
-
-    public function removePreset(Preset $preset): static
-    {
-        if ($this->presets->removeElement($preset)) {
-            // set the owning side to null (unless already changed)
-            if ($preset->getForShip() === $this) {
-                $preset->setForShip(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getLoadout(): ?Loadout
-    {
-        return $this->loadout;
-    }
-
-    public function setLoadout(?Loadout $loadout): static
-    {
-        $this->loadout = $loadout;
 
         return $this;
     }
 }
+
+
+// curl -X "GET" -H "accept: application/ld+json" "http://localhost:8000/api/members/4"
