@@ -18,40 +18,40 @@ class Loadout
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'loadouts')]
+    private ?Ship $for_ship = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'loadouts')]
-    private ?Ship $forShip = null;
+    #[ORM\Column(nullable: true)]
+    private ?array $power_plants = null;
 
     #[ORM\Column(nullable: true)]
-    private ?array $powerPlant = null;
+    private ?array $coolers = null;
 
     #[ORM\Column(nullable: true)]
-    private ?array $cooler = null;
+    private ?array $shields = null;
 
     #[ORM\Column(nullable: true)]
-    private ?array $shield = null;
+    private ?array $quantum_drive = null;
 
     #[ORM\Column(nullable: true)]
-    private ?array $quantumDrive = null;
+    private ?array $weapons = null;
 
     #[ORM\Column(nullable: true)]
-    private ?array $weapon = null;
+    private ?array $missiles = null;
 
     #[ORM\Column(nullable: true)]
-    private ?array $missile = null;
+    private ?array $turrets = null;
 
     #[ORM\Column(nullable: true)]
-    private ?array $turret = null;
+    private ?array $utility_items = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?array $utilityItem = null;
-
-    #[ORM\ManyToMany(targetEntity: Component::class, mappedBy: 'forLoadout')]
+    #[ORM\ManyToMany(targetEntity: Components::class, mappedBy: 'loadout')]
     private Collection $components;
 
     public function __construct()
@@ -62,6 +62,18 @@ class Loadout
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getForShip(): ?Ship
+    {
+        return $this->for_ship;
+    }
+
+    public function setForShip(?Ship $for_ship): static
+    {
+        $this->for_ship = $for_ship;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -88,136 +100,124 @@ class Loadout
         return $this;
     }
 
-    public function getForShip(): ?Ship
+    public function getPowerPlants(): ?array
     {
-        return $this->forShip;
+        return $this->power_plants;
     }
 
-    public function setForShip(?Ship $forShip): static
+    public function setPowerPlants(?array $power_plants): static
     {
-        $this->forShip = $forShip;
+        $this->power_plants = $power_plants;
 
         return $this;
     }
 
-    public function getPowerPlant(): ?array
+    public function getCoolers(): ?array
     {
-        return $this->powerPlant;
+        return $this->coolers;
     }
 
-    public function setPowerPlant(?array $powerPlant): static
+    public function setCoolers(?array $coolers): static
     {
-        $this->powerPlant = $powerPlant;
+        $this->coolers = $coolers;
 
         return $this;
     }
 
-    public function getCooler(): ?array
+    public function getShields(): ?array
     {
-        return $this->cooler;
+        return $this->shields;
     }
 
-    public function setCooler(?array $cooler): static
+    public function setShields(?array $shields): static
     {
-        $this->cooler = $cooler;
-
-        return $this;
-    }
-
-    public function getShield(): ?array
-    {
-        return $this->shield;
-    }
-
-    public function setShield(?array $shield): static
-    {
-        $this->shield = $shield;
+        $this->shields = $shields;
 
         return $this;
     }
 
     public function getQuantumDrive(): ?array
     {
-        return $this->quantumDrive;
+        return $this->quantum_drive;
     }
 
-    public function setQuantumDrive(?array $quantumDrive): static
+    public function setQuantumDrive(?array $quantum_drive): static
     {
-        $this->quantumDrive = $quantumDrive;
+        $this->quantum_drive = $quantum_drive;
 
         return $this;
     }
 
-    public function getWeapon(): ?array
+    public function getWeapons(): ?array
     {
-        return $this->weapon;
+        return $this->weapons;
     }
 
-    public function setWeapon(?array $weapon): static
+    public function setWeapons(?array $weapons): static
     {
-        $this->weapon = $weapon;
+        $this->weapons = $weapons;
 
         return $this;
     }
 
-    public function getMissile(): ?array
+    public function getMissiles(): ?array
     {
-        return $this->missile;
+        return $this->missiles;
     }
 
-    public function setMissile(?array $missile): static
+    public function setMissiles(?array $missiles): static
     {
-        $this->missile = $missile;
+        $this->missiles = $missiles;
 
         return $this;
     }
 
-    public function getTurret(): ?array
+    public function getTurrets(): ?array
     {
-        return $this->turret;
+        return $this->turrets;
     }
 
-    public function setTurret(?array $turret): static
+    public function setTurrets(?array $turrets): static
     {
-        $this->turret = $turret;
+        $this->turrets = $turrets;
 
         return $this;
     }
 
-    public function getUtilityItem(): ?array
+    public function getUtilityItems(): ?array
     {
-        return $this->utilityItem;
+        return $this->utility_items;
     }
 
-    public function setUtilityItem(?array $utilityItem): static
+    public function setUtilityItems(?array $utility_items): static
     {
-        $this->utilityItem = $utilityItem;
+        $this->utility_items = $utility_items;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Component>
+     * @return Collection<int, Components>
      */
     public function getComponents(): Collection
     {
         return $this->components;
     }
 
-    public function addComponent(Component $component): static
+    public function addComponent(Components $component): static
     {
         if (!$this->components->contains($component)) {
             $this->components->add($component);
-            $component->addForLoadout($this);
+            $component->addLoadout($this);
         }
 
         return $this;
     }
 
-    public function removeComponent(Component $component): static
+    public function removeComponent(Components $component): static
     {
         if ($this->components->removeElement($component)) {
-            $component->removeForLoadout($this);
+            $component->removeLoadout($this);
         }
 
         return $this;

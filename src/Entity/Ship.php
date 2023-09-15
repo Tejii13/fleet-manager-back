@@ -17,16 +17,19 @@ class Ship
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'ships')]
+    private ?User $owner = null;
+
     #[ORM\Column(length: 50)]
     private ?string $name = null;
 
     #[ORM\Column(length: 32, nullable: true)]
     private ?string $nickname = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ships')]
-    private ?Member $owner = null;
+    #[ORM\Column]
+    private ?int $size = null;
 
-    #[ORM\OneToMany(mappedBy: 'forShip', targetEntity: Loadout::class)]
+    #[ORM\OneToMany(mappedBy: 'for_ship', targetEntity: Loadout::class)]
     private Collection $loadouts;
 
     public function __construct()
@@ -37,6 +40,18 @@ class Ship
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -63,14 +78,14 @@ class Ship
         return $this;
     }
 
-    public function getOwner(): ?Member
+    public function getSize(): ?int
     {
-        return $this->owner;
+        return $this->size;
     }
 
-    public function setOwner(?Member $owner): static
+    public function setSize(int $size): static
     {
-        $this->owner = $owner;
+        $this->size = $size;
 
         return $this;
     }
@@ -105,6 +120,3 @@ class Ship
         return $this;
     }
 }
-
-
-// curl -X "GET" -H "accept: application/ld+json" "http://localhost:8000/api/members/4"

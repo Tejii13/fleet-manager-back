@@ -1,10 +1,11 @@
 api_platform:
-    title: Hello API Platform
-    version: 1.0.0
-    # Good defaults for REST APIs
-    defaults:
-        stateless: true
-        cache_headers:
-            vary: ['Content-Type', 'Authorization', 'Origin']
-        extra_properties:
-            standard_put: true
+  title: Hello API Platform
+  version: 1.0.0
+  # Good defaults for REST APIs
+  defaults:
+    stateless: true
+    cache_headers:
+      vary: ["Content-Type", "Authorization", "Origin"]
+    extra_properties:
+      standard_put: true
+    pagination_enabled: false
