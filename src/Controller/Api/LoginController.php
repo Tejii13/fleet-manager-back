@@ -5,7 +5,7 @@ namespace App\Controller\Api;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response as JsonResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,26 +19,21 @@ class LoginController extends AbstractController
 
     $user = $userRepository->findOneBy(['username' => $data['username']]);
 
+    // Verifies if the user exists
     if (!$user) {
-      $responseContent = ['message' => 'Impossible de s\'identifier.', 'code' => 401];
+      $responseContent = ['message' => "Impossible de s'identifier.", 'code' => 401];
       $statusCode = 401;
 
       $content = json_encode($responseContent);
       return new JsonResponse($content, $statusCode);
     }
 
+    // Verifies if the password is correct
     if (!$passwordHasher->isPasswordValid($user, $data['password'])) {
-      $responseContent = ['message' => 'Impossible de s\'identifier.', 'code' => 401];
-      $statusCode = 401;
-
-      $content = json_encode($responseContent);
-      return new JsonResponse($content, $statusCode);
+      return new JsonResponse(['message' => 'Impossible de s\'identifier.', 'code' => 401], 400);
     }
 
-    $responseContent = ['message' => 'Connexion réussie.', 'code' => 201, 'id' => $user->getId()];
-    $statusCode = 200;
-
-    $content = json_encode($responseContent);
-    return new JsonResponse($content, $statusCode);
+    // Sends validation response
+    return new JsonResponse(['message' => 'Connexion reussie.', 'code' => 201, 'id' => $user->getId()], 200);
   }
 }
