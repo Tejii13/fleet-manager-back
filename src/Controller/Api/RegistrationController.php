@@ -15,26 +15,26 @@ class RegistrationController extends AbstractController
   public function registration(UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $entityManager): JsonResponse
   {
     try {
-    $data = json_decode($request->getContent(), true);
+      $data = json_decode($request->getContent(), true);
 
-    // Creates the user
-    $user = new User();
+      // Creates the user
+      $user = new User();
 
-    // Sets the user data
-    $user->setUsername($data['username']);
-    $user->setRole(['roles']);
+      // Sets the user data
+      $user->setUsername($data['username']);
+      $user->setRoles(['roles']);
 
-    $plaintextPassword = $data['password'];
+      $plaintextPassword = $data['password'];
 
-    // Hash the password
-    $hashedPassword = $passwordHasher->hashPassword($user, $plaintextPassword);
-    $user->setPassword($hashedPassword);
+      // Hash the password
+      $hashedPassword = $passwordHasher->hashPassword($user, $plaintextPassword);
+      $user->setPassword($hashedPassword);
 
-    // Persist in the database
-    $entityManager->persist($user);
-    $entityManager->flush();
+      // Persist in the database
+      $entityManager->persist($user);
+      $entityManager->flush();
 
-    return JsonResponse(['User created with success'], 201);
+      return JsonResponse(['User created with success'], 201);
     } catch (error) {
       return JsonResponse(['Erreur lors de la connection à la base de données'], 13);
     }

@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Repository\UserRepository;
-// use Symfony\Component\Passwordhasher\hasher\UserPasswordHasherInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response as JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,40 +11,34 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LoginController extends AbstractController
 {
-  // public function login(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): JsonResponse
-    #[Route('/api/login', name: 'app_login', methods: ['POST'])]
-    public function login(Request $request, UserRepository $userRepository): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
+  #[Route('/api/login', name: 'app_login', methods: ['POST'])]
+  public function login(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): JsonResponse
+  // public function login(Request $request, UserRepository $userRepository): JsonResponse
+  {
+    $data = json_decode($request->getContent(), true);
 
-        $user = $userRepository->findOneBy(['username' => $data['username']]);
+    $user = $userRepository->findOneBy(['username' => $data['username']]);
 
-        if (!$user) {
-          $responseContent = ['message' => 'Utilisateur non trouvé.'];
-          $statusCode = 401;
+    if (!$user) {
+      $responseContent = ['message' => 'Impossible de s\'identifier.', 'code' => 401];
+      $statusCode = 401;
 
-          $content = json_encode($responseContent);
-          return new JsonResponse($content, $statusCode);
-        }
-
-        // if (passwordHasher->isPasswordValid($user, $data['password'])) {
-        //     return new JsonResponse(['message' => 'Mot de passe incorrect.'], 401);
-        // }
-
-        // FIXME Temporaty fix
-        if ($user->getPassword() !== $data['password']) {
-          $responseContent = ['message' => 'Mot de passe incorrect.'];
-          $statusCode = 401;
-
-          $content = json_encode($responseContent);
-          return new JsonResponse($content, $statusCode);
-        }
-
-        $responseContent = ['message' => 'Connexion réussie.'];
-        $statusCode = 200;
-
-        $content = json_encode($responseContent);
-        return new JsonResponse($content, $statusCode);
-
+      $content = json_encode($responseContent);
+      return new JsonResponse($content, $statusCode);
     }
+
+    if (!$passwordHasher->isPasswordValid($user, $data['password'])) {
+      $responseContent = ['message' => 'Impossible de s\'identifier.', 'code' => 401];
+      $statusCode = 401;
+
+      $content = json_encode($responseContent);
+      return new JsonResponse($content, $statusCode);
+    }
+
+    $responseContent = ['message' => 'Connexion réussie.', 'code' => 201, 'id' => $user->getId()];
+    $statusCode = 200;
+
+    $content = json_encode($responseContent);
+    return new JsonResponse($content, $statusCode);
+  }
 }
