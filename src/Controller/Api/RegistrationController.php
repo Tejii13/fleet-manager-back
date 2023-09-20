@@ -10,11 +10,18 @@ use Symfony\Component\HttpFoundation\Response as JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
+use \DateTime;
 
 class RegistrationController extends AbstractController
 {
   #[Route('/api/register', name: 'app_register', methods: ['POST'])]
-  public function registration(UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): JsonResponse
+  public function registration(
+    UserPasswordHasherInterface $passwordHasher,
+    Request $request,
+    EntityManagerInterface $entityManager,
+    UserRepository $userRepository): JsonResponse
   {
     try {
       $data = json_decode($request->getContent(), true);
@@ -43,6 +50,18 @@ class RegistrationController extends AbstractController
       // Hashes the password
       $hashedPassword = $passwordHasher->hashPassword($user, $plaintextPassword);
       $user->setPassword($hashedPassword);
+
+      // Generates auth uuid
+      $auth = Uuid::v4();
+      $user->setAuth($auth);
+
+      // Sets expire date
+      $expireDate = new \DateTime();
+      $expireDate->modify('+1 month');
+      $user->setAuthExpiresAt($expireDate);
+
+      // Sets verification status
+      $user->setVerified(false);
 
       // Persists in the database
       $entityManager->persist($user);

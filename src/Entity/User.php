@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -35,6 +36,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ship::class)]
     private Collection $ships;
+
+    #[ORM\Column(length: 36)]
+    private ?string $auth = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $authExpiresAt = null;
+
+    #[ORM\Column]
+    private ?bool $verified = null;
 
     public function __construct()
     {
@@ -137,6 +147,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $ship->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuth(): ?string
+    {
+        return $this->auth;
+    }
+
+    public function setAuth(string $auth): static
+    {
+        $this->auth = $auth;
+
+        return $this;
+    }
+
+    public function getAuthExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->authExpiresAt;
+    }
+
+    public function setAuthExpiresAt(\DateTimeInterface $authExpiresAt): static
+    {
+        $this->authExpiresAt = $authExpiresAt;
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): static
+    {
+        $this->verified = $verified;
 
         return $this;
     }
