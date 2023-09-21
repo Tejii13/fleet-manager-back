@@ -40,9 +40,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 36)]
     private ?string $auth = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $authExpiresAt = null;
-
     #[ORM\Column]
     private ?bool $verified = null;
 
@@ -159,18 +156,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAuth(string $auth): static
     {
         $this->auth = $auth;
-
-        return $this;
-    }
-
-    public function getAuthExpiresAt(): ?\DateTimeInterface
-    {
-        return $this->authExpiresAt;
-    }
-
-    public function setAuthExpiresAt(\DateTimeInterface $authExpiresAt): static
-    {
-        $this->authExpiresAt = $authExpiresAt;
 
         return $this;
     }

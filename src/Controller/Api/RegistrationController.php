@@ -11,8 +11,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Uid\UuidV4;
-use \DateTime;
 
 class RegistrationController extends AbstractController
 {
@@ -21,8 +19,8 @@ class RegistrationController extends AbstractController
     UserPasswordHasherInterface $passwordHasher,
     Request $request,
     EntityManagerInterface $entityManager,
-    UserRepository $userRepository): JsonResponse
-  {
+    UserRepository $userRepository
+  ): JsonResponse {
     try {
       $data = json_decode($request->getContent(), true);
 
@@ -31,7 +29,7 @@ class RegistrationController extends AbstractController
 
       if ($existingUser !== null) {
 
-        $responseContent = ['message' => 'Cet utilisateur existe déjà', 'code' => 400];
+        $responseContent = ['message' => 'User already exists', 'code' => 400];
         $statusCode = 400;
         $content = json_encode($responseContent);
         return new JsonResponse($content, $statusCode);
@@ -52,13 +50,10 @@ class RegistrationController extends AbstractController
       $user->setPassword($hashedPassword);
 
       // Generates auth uuid
+      // $auth = Uuid::v4();
+      // $user->setAuth($auth);
       $auth = Uuid::v4();
       $user->setAuth($auth);
-
-      // Sets expire date
-      $expireDate = new \DateTime();
-      $expireDate->modify('+1 month');
-      $user->setAuthExpiresAt($expireDate);
 
       // Sets verification status
       $user->setVerified(false);
@@ -68,13 +63,13 @@ class RegistrationController extends AbstractController
       $entityManager->flush();
 
       // Sends validation response
-      $responseContent = ['message' => 'Utilisateur créé avec succès.', 'code' => 201, 'pass' => $plaintextPassword];
+      $responseContent = ['message' => 'User created.', 'code' => 201, 'pass' => $plaintextPassword];
       $statusCode = 201;
 
       $content = json_encode($responseContent);
       return new JsonResponse($content, $statusCode);
     } catch (\Exception $e) {
-      $responseContent = ['message' => 'L\'opération a échoué.', 'code' => 400];
+      $responseContent = ['message' => 'Operation failed.', 'code' => 400];
       $statusCode = 400;
 
       $content = json_encode($responseContent);
