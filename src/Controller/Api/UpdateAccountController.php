@@ -17,20 +17,25 @@ use App\Service\RandomIdGenerator;
 class UpdateAccountController extends AbstractController
 {
     #[Route('/api/update/password', name: 'app_update_account', methods: ['PUT'])]
-    public function updatePassword(UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository, Request $request, EntityManagerInterface $entityManagerInterface): JsonResponse
+    public function updatePassword(UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
-        $user = $userRepository->findOneBy(['id' => $data['id']]);
+        $user = $userRepository->findOneBy(['id' => $data['userId']]);
 
         if (!$user) {
             return new JsonResponse(['message' => "Impossible de s'identifier", 'code' => 401], 401);
         }
 
-        $password = $data('password');
+        $password = $data['password'];
         $hashedPassword = $passwordHasher->hashPassword($user, $password);
 
         $user->setPassword($hashedPassword);
+
+        $user->setVerified(true);
+
+        $entityManager->persist($user);
+        $entityManager->flush();
 
         return new JsonResponse(['message' => 'Password changed!', 'code' => 201], 201);
     }
