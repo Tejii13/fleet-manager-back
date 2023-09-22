@@ -11,6 +11,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
+use App\Service\RandomIdGenerator;
 
 class RegistrationController extends AbstractController
 {
@@ -19,7 +20,8 @@ class RegistrationController extends AbstractController
     UserPasswordHasherInterface $passwordHasher,
     Request $request,
     EntityManagerInterface $entityManager,
-    UserRepository $userRepository
+    UserRepository $userRepository,
+    RandomIdGenerator $idGenerator
   ): JsonResponse {
     try {
       $data = json_decode($request->getContent(), true);
@@ -42,8 +44,7 @@ class RegistrationController extends AbstractController
       $user->setUsername($data['username']);
       $user->setRoles($data['roles']);
 
-      $creationDate = new \DateTime();
-      $plaintextPassword = $data['username'] . '.' . $creationDate->format('Y-m-d') . '.' . 'temporaire';
+      $plaintextPassword = $data['username'] . '.' . $idGenerator->generateRandomId(10);
 
       // Hashes the password
       $hashedPassword = $passwordHasher->hashPassword($user, $plaintextPassword);
