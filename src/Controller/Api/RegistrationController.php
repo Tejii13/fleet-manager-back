@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
 use App\Service\RandomIdGenerator;
 
+
 class RegistrationController extends AbstractController
 {
   #[Route('/api/register', name: 'app_register', methods: ['POST'])]
