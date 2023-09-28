@@ -12,12 +12,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class GetUserShipListController extends AbstractController
 {
   #[Route('/api/shipsList', name: 'app_shipsList', methods: ['POST'])] // FIXME Fix it ASAP
-  public function getList(Request $request, ShipRepository $shipRepository)
+  public function getList(Request $request, ShipRepository $shipRepository): JsonResponse
   {
     $data = json_decode($request->getContent(), true);
 
-    $shipsList = $shipRepository->findAll(['owner_id' => $data['userId']]);
+    $shipsList = $shipRepository->findBy(['owner' => $data['userId']]);
 
-    return $shipsList;
+    return $this->json($shipsList);
   }
 }

@@ -27,7 +27,7 @@ class Ship
     private ?string $nickname = null;
 
     #[ORM\Column]
-    private ?int $size = null;
+    private ?string $size = null;
 
     #[ORM\OneToMany(mappedBy: 'for_ship', targetEntity: Loadout::class)]
     private Collection $loadouts;
@@ -78,12 +78,12 @@ class Ship
         return $this;
     }
 
-    public function getSize(): ?int
+    public function getSize(): ?string
     {
         return $this->size;
     }
 
-    public function setSize(int $size): static
+    public function setSize(string $size): static
     {
         $this->size = $size;
 
