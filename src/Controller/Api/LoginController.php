@@ -54,7 +54,7 @@ class LoginController extends AbstractController
   {
     $data = json_decode($request->getContent(), true);
 
-    $user = $userRepository->findOneBy(['id' => $data['id']]);
+    $user = $userRepository->findOneBy(['auth' => $data['auth']]);
 
     // Verifies if the user exists
     if (!$user) {
@@ -65,6 +65,6 @@ class LoginController extends AbstractController
       return new JsonResponse(['message' => 'Need to reconnect', 'code' => 401], 401);
     }
 
-    return new JsonResponse(['message' => 'Connection verified', 'code' => 200], 200);
+    return new JsonResponse(['message' => 'Connection verified', "id" => $user->getId(), 'code' => 200], 200);
   }
 }
