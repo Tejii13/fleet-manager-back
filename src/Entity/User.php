@@ -43,9 +43,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $verified = null;
 
+    #[ORM\ManyToMany(targetEntity: Organizations::class, inversedBy: 'users')]
+    private Collection $organizations;
+
+    #[ORM\ManyToOne(inversedBy: 'leader')]
+    private ?Organizations $organization_leader = null;
+
     public function __construct()
     {
         $this->ships = new ArrayCollection();
+        $this->organizations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -81,8 +88,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_CITIZEN';
 
         return array_unique($roles);
     }
@@ -168,6 +173,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $verified): static
     {
         $this->verified = $verified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, organizations>
+     */
+    public function getOrganizations(): Collection
+    {
+        return $this->organizations;
+    }
+
+    public function addOrganization(Organizations $organization): static
+    {
+        if (!$this->organizations->contains($organization)) {
+            $this->organizations->add($organization);
+        }
+
+        return $this;
+    }
+
+    public function removeOrganization(Organizations $organization): static
+    {
+        $this->organizations->removeElement($organization);
+
+        return $this;
+    }
+
+    public function getOrganizationLeader(): ?Organizations
+    {
+        return $this->organization_leader;
+    }
+
+    public function setOrganizationLeader(?Organizations $organization_leader): static
+    {
+        $this->organization_leader = $organization_leader;
 
         return $this;
     }
