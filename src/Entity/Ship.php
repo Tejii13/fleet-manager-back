@@ -27,7 +27,7 @@ class Ship
     #[ORM\Column(length: 32, nullable: true)]
     private ?string $nickname = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $size = null;
 
     #[ORM\OneToMany(mappedBy: 'for_ship', targetEntity: Loadout::class)]
