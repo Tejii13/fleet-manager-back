@@ -3,6 +3,8 @@
 namespace App\Controller\Api;
 
 use App\Entity\User;
+use App\Entity\Organizations;
+use App\Repository\OrganizationsRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +24,7 @@ class RegistrationController extends AbstractController
     Request $request,
     EntityManagerInterface $entityManager,
     UserRepository $userRepository,
+    OrganizationsRepository $organizationsRepository,
     RandomIdGenerator $idGenerator
   ): JsonResponse {
     try {
@@ -60,6 +63,21 @@ class RegistrationController extends AbstractController
       // Sets verification status
       $user->setVerified(false);
 
+      //Add user to organization
+      $organization = new Organizations();
+      $organization = $organizationsRepository->findOneBy(['id' => $data['organizationId']]);
+
+      if ($organization) {
+        $user->addOrganization($organization);
+        $entityManager->persist($organization);
+      } else {
+        $responseContent = ['message' => 'Impossible to find given organization.', 'code' => 400];
+        $statusCode = 400;
+
+        $content = json_encode($responseContent);
+        return new JsonResponse($content, $statusCode);
+      }
+
       // Persists in the database
       $entityManager->persist($user);
       $entityManager->flush();
@@ -71,7 +89,7 @@ class RegistrationController extends AbstractController
       $content = json_encode($responseContent);
       return new JsonResponse($content, $statusCode);
     } catch (\Exception $e) {
-      $responseContent = ['message' => 'Operation failed.', 'code' => 400];
+      $responseContent = ['message' => 'Operation failed.', 'error' => $e, 'code' => 400];
       $statusCode = 400;
 
       $content = json_encode($responseContent);
