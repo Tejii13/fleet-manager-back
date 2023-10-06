@@ -46,7 +46,7 @@ class LoginController extends AbstractController
     $entityManager->flush();
 
     // Sends validation response
-    return new JsonResponse(['message' => 'Connexion réussie.', 'auth' => $auth, 'code' => 201, 'id' => $user->getId()], 200);
+    return new JsonResponse(['message' => 'Connexion réussie.', 'auth' => $auth, 'code' => 201, 'username' => $user->getUsername(), 'id' => $user->getId()], 200);
   }
 
   #[Route('/api/verify', name: 'app_verify', methods: ['PUT'])]
