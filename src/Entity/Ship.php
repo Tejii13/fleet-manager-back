@@ -57,6 +57,9 @@ class Ship
     #[ORM\Column(nullable: true)]
     private ?int $cargo_capacity = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $focus = null;
+
     public function __construct()
     {
         $this->loadouts = new ArrayCollection();
@@ -237,6 +240,18 @@ class Ship
     public function setCargoCapacity(?int $cargo_capacity): static
     {
         $this->cargo_capacity = $cargo_capacity;
+
+        return $this;
+    }
+
+    public function getFocus(): ?string
+    {
+        return $this->focus;
+    }
+
+    public function setFocus(?string $focus): static
+    {
+        $this->focus = $focus;
 
         return $this;
     }
