@@ -6,7 +6,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\OrganizationsRepository;
 
-class OrganizationsShipsProvider implements ProviderInterface
+class OrganizationsUsersProvider implements ProviderInterface
 {
     public function __construct(private OrganizationsRepository $organizationsRepository)
     {
@@ -15,15 +15,13 @@ class OrganizationsShipsProvider implements ProviderInterface
     {
         $organization = $this->organizationsRepository->findOneBy(['id' => $uriVariables['id']]);
 
-        $allShips = [];
+        $allUsers = [];
 
         foreach ($organization->getUsers() as $user) {
-            foreach ($user->getShips() as $ship) {
-                // $allShips[] = ['name' => $ship->getName(), 'id' => $ship->getId()];
-                $allShips[] = $ship;
-            }
+            $allUsers[] = ['username' => $user->getUsername(), 'id' => $user->getId()];
+            // $allUsers[] = $user;
         }
-        // dd($allShips);
-        return $allShips;
+        // dd($allUsers);
+        return $allUsers;
     }
 }

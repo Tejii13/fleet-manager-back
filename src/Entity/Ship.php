@@ -60,6 +60,9 @@ class Ship
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $focus = null;
 
+    #[ORM\Column(length: 60)]
+    private ?string $owner_username = null;
+
     public function __construct()
     {
         $this->loadouts = new ArrayCollection();
@@ -252,6 +255,18 @@ class Ship
     public function setFocus(?string $focus): static
     {
         $this->focus = $focus;
+
+        return $this;
+    }
+
+    public function getOwnerUsername(): ?string
+    {
+        return $this->owner_username;
+    }
+
+    public function setOwnerUsername(string $owner_username): static
+    {
+        $this->owner_username = $owner_username;
 
         return $this;
     }
