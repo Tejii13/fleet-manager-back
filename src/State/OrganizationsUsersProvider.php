@@ -18,7 +18,7 @@ class OrganizationsUsersProvider implements ProviderInterface
         $allUsers = [];
 
         foreach ($organization->getUsers() as $user) {
-            $allUsers[] = ['username' => $user->getUsername(), 'id' => $user->getId()];
+            $allUsers[] = ['username' => $user->getUsername(), 'id' => $user->getId(), 'roles' => $user->getRoles()];
             // $allUsers[] = $user;
         }
         // dd($allUsers);
