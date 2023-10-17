@@ -63,6 +63,12 @@ class Ship
     #[ORM\Column(length: 60)]
     private ?string $owner_username = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $obtention_method = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $loaner_for = null;
+
     public function __construct()
     {
         $this->loadouts = new ArrayCollection();
@@ -267,6 +273,30 @@ class Ship
     public function setOwnerUsername(string $owner_username): static
     {
         $this->owner_username = $owner_username;
+
+        return $this;
+    }
+
+    public function getObtentionMethod(): ?string
+    {
+        return $this->obtention_method;
+    }
+
+    public function setObtentionMethod(string $obtention_method): static
+    {
+        $this->obtention_method = $obtention_method;
+
+        return $this;
+    }
+
+    public function getLoanerFor(): ?string
+    {
+        return $this->loaner_for;
+    }
+
+    public function setLoanerFor(?string $loaner_for): static
+    {
+        $this->loaner_for = $loaner_for;
 
         return $this;
     }
