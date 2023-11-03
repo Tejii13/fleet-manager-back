@@ -4,6 +4,7 @@ namespace App\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use App\ApiResource\Organizations;
 use App\Repository\OrganizationsRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,17 +19,19 @@ class OrganizationUserRemovingProcessor implements ProcessorInterface
     {
 
         $organization = $this->organizationsRepository->findOneBy(['id' => $uriVariables['id']]);
-        $user = $this->userRepository->findOneBy(['id' => $uriVariables['userId']]);
 
-        $organization->removeUser($user);
-        // $user->removeOrganization($organization);
+        if ($organization) {
+            $user = $this->userRepository->findOneBy(['id' => $uriVariables['userId']]);
 
-        // $this->entityManager->persist($user);
-        $this->entityManager->persist($organization);
-        $this->entityManager->flush();
+            if ($user) {
+                $user->removeOrganization($organization);
 
-        // dump($organization);
-        // dd($user);
-        return $organization;
+                $this->entityManager->flush();
+
+                return $organization;
+            }
+        }
+
+        return null;
     }
 }

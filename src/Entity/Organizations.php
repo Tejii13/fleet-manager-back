@@ -26,7 +26,7 @@ class Organizations
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'organizations')]
     private Collection $users;
 
-    #[ORM\OneToMany(mappedBy: 'organization_leader', targetEntity: user::class)]
+    #[ORM\OneToMany(mappedBy: 'organization_leader', targetEntity: user::class, cascade: ['persist'])]
     private Collection $leader;
 
     public function __construct()

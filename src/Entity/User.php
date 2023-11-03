@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ship::class)]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ship::class, cascade: ['remove'])]
     private Collection $ships;
 
     #[ORM\Column(length: 36)]
