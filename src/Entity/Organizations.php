@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\OrganizationsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrganizationsRepository::class)]
@@ -28,6 +29,24 @@ class Organizations
 
     #[ORM\OneToMany(mappedBy: 'organization_leader', targetEntity: user::class, cascade: ['persist'])]
     private Collection $leader;
+
+    #[ORM\Column(length: 50)]
+    private ?string $archetype = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $banner = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $focus = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $language = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $logo = null;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $members = null;
 
     public function __construct()
     {
@@ -117,6 +136,78 @@ class Organizations
                 $leader->setOrganizationLeader(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getArchetype(): ?string
+    {
+        return $this->archetype;
+    }
+
+    public function setArchetype(string $archetype): static
+    {
+        $this->archetype = $archetype;
+
+        return $this;
+    }
+
+    public function getBanner(): ?string
+    {
+        return $this->banner;
+    }
+
+    public function setBanner(string $banner): static
+    {
+        $this->banner = $banner;
+
+        return $this;
+    }
+
+    public function getFocus(): ?string
+    {
+        return $this->focus;
+    }
+
+    public function setFocus(string $focus): static
+    {
+        $this->focus = $focus;
+
+        return $this;
+    }
+
+    public function getLanguage(): ?string
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(string $language): static
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(string $logo): static
+    {
+        $this->logo = $logo;
+
+        return $this;
+    }
+
+    public function getMembers(): ?int
+    {
+        return $this->members;
+    }
+
+    public function setMembers(int $members): static
+    {
+        $this->members = $members;
 
         return $this;
     }
