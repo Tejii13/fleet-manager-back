@@ -49,6 +49,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'leader')]
     private ?Organizations $organization_leader = null;
 
+    #[ORM\ManyToOne]
+    private ?Organizations $main_org = null;
+
     public function __construct()
     {
         $this->ships = new ArrayCollection();
@@ -209,6 +212,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setOrganizationLeader(?Organizations $organization_leader): static
     {
         $this->organization_leader = $organization_leader;
+
+        return $this;
+    }
+
+    public function getMainOrg(): ?Organizations
+    {
+        return $this->main_org;
+    }
+
+    public function setMainOrg(?Organizations $main_org): static
+    {
+        $this->main_org = $main_org;
 
         return $this;
     }
