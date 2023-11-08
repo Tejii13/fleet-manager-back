@@ -204,18 +204,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getOrganizationLeader(): ?Organizations
-    {
-        return $this->organization_leader;
-    }
-
-    public function setOrganizationLeader(?Organizations $organization_leader): static
-    {
-        $this->organization_leader = $organization_leader;
-
-        return $this;
-    }
-
     public function getMainOrg(): ?Organizations
     {
         return $this->main_org;

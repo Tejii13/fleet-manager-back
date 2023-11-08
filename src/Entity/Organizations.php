@@ -118,28 +118,6 @@ class Organizations
         return $this->leader;
     }
 
-    public function addLeader(user $leader): static
-    {
-        if (!$this->leader->contains($leader)) {
-            $this->leader->add($leader);
-            $leader->setOrganizationLeader($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLeader(user $leader): static
-    {
-        if ($this->leader->removeElement($leader)) {
-            // set the owning side to null (unless already changed)
-            if ($leader->getOrganizationLeader() === $this) {
-                $leader->setOrganizationLeader(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getArchetype(): ?string
     {
         return $this->archetype;
