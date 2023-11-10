@@ -96,6 +96,8 @@ class RegistrationController extends AbstractController
           return new JsonResponse($content, $statusCode);
         }
 
+        $user->setMainOrg($organization);
+
         // Persists in the database
         $entityManager->persist($user);
         $entityManager->flush();

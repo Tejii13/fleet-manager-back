@@ -215,4 +215,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function removeMainOrg(): static
+    {
+        $this->main_org = null;
+
+        return $this;
+    }
 }

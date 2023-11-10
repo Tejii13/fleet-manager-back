@@ -25,6 +25,9 @@ class OrganizationUserRemovingProcessor implements ProcessorInterface
 
             if ($user) {
                 $user->removeOrganization($organization);
+                if ($user->getMainOrg() === $organization) {
+                    $user->removeMainOrg($organization);
+                }
 
                 $this->entityManager->flush();
 
